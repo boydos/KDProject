@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">快递信息</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">设置</string>
+    
+	<string name="kd_search">快递查询</string>
+    <string name="kd_number">快递单号</string>
+    <string name="kd_company">快递公司</string>
+</resources>

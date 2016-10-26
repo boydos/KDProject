@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="company">
+      <item >自动识别</item>
+      <item >申通快递</item>
+  </string-array>
+  
+  <string-array name="company_values">
+        <item >AUTO</item>
+        <item >STO</item>
+    </string-array>
+</resources>
