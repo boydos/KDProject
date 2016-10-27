@@ -8,4 +8,8 @@
 	<string name="kd_search">快递查询</string>
     <string name="kd_number">快递单号</string>
     <string name="kd_company">快递公司</string>
+    
+    <string name="kd_order">订单轨迹</string>
+    <string name="kd_history">历史记录</string>
+    <string name="about">关于我们</string>
 </resources>

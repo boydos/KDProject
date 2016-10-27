@@ -16,11 +16,11 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="40sp"
 	        android:hint="@string/kd_number"/>
-	    <ListView android:id="@+id/company"
+	    <Spinner android:id="@+id/company"
 	        android:layout_width="match_parent"
 	        android:layout_height="40sp"
 	        android:layout_marginTop="5sp"
-	        android:entries="@array/company"></ListView>
+	        android:entries="@array/company"></Spinner>
 	    <Button android:id="@+id/search"
 	        android:layout_marginTop="5sp"
 	        android:layout_width="match_parent"
@@ -28,16 +28,24 @@
 	        android:gravity="center"
 	        android:text="@string/kd_search"/>
 	</LinearLayout>
+   <com.byds.kd.views.TabViewPager
+	    android:id="@+id/tabviewpager"
+	    android:layout_marginTop="5sp"
+	    android:layout_width="match_parent"
+   	    android:layout_height="match_parent"
+   	    android:visibility="gone"/> 
+	    
    <com.byds.kd.views.SelectedLoadViewPager
-       android:id="@+id/vp_list"
+       android:id="@+id/myviewpager"
        android:layout_marginTop="5sp"
        android:layout_width="match_parent"
-   	   android:layout_height="match_parent">
+   	   android:layout_height="match_parent"
+   	   android:visibility="gone">
        <android.support.v4.view.PagerTabStrip
            android:id="@+id/pagertitle"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            />
-   </com.byds.kd.views.SelectedLoadViewPager>
+   </com.byds.kd.views.SelectedLoadViewPager>  
 
 </LinearLayout>

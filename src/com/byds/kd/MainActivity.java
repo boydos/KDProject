@@ -8,20 +8,35 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
 
-import com.byds.kd.views.CustomPagerAdapter;
+import com.byds.kd.adapter.CustomPagerAdapter;
 import com.byds.kd.views.SelectedLoadViewPager;
+import com.byds.kd.views.TabViewPager;
 
 public class MainActivity extends ActionBarActivity {
-	SelectedLoadViewPager viewPager;
 	View locationView;
 	View historyView;
 	View aboutView;
+	
+	EditText mNumberText;
+	Spinner mCompanyList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		viewPager = (SelectedLoadViewPager)findViewById(R.id.vp_list);
+		initViews();
+		initData();
+	}
+	
+	private void initViews() {
+		mNumberText = (EditText)findViewById(R.id.number);
+		mCompanyList = (Spinner)findViewById(R.id.company);
 		LayoutInflater mLi= LayoutInflater.from(this);
 		locationView =mLi.inflate(R.layout.location, null);
 		historyView =mLi.inflate(R.layout.history, null);
@@ -30,12 +45,32 @@ public class MainActivity extends ActionBarActivity {
 		views.add(locationView);
 		views.add(historyView);
 		views.add(aboutView);
+		ArrayList<String>titles = new ArrayList<String>();
+		titles.add(getResources().getString(R.string.kd_order));
+		titles.add(getResources().getString(R.string.kd_history));
+		titles.add(getResources().getString(R.string.about));
 		
-		ArrayList<String> titles = new ArrayList<String>();
-		titles.add("订单轨迹");
-		titles.add("历史订单");
-		titles.add("关于我们");
+		//useTabView(views, titles);
+		useSelectLoadView(views, titles);
+	}
+	private void initData() {
+		mNumberText.setText("");
+		mCompanyList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.company)));
+		//mCompanyList.setOnItemClickListener(new CompanyItemClickListener());
+	}
+	
+	private void useSelectLoadView(ArrayList<View> views,ArrayList<String>titles) {
+		SelectedLoadViewPager viewPager = (SelectedLoadViewPager)findViewById(R.id.myviewpager);
+		viewPager.setVisibility(View.VISIBLE);
 		viewPager.setAdapter(new CustomPagerAdapter(views, titles));
+	}
+	private void useTabView(ArrayList<View> views,ArrayList<String>titles) {
+		TabViewPager viewPager = (TabViewPager)findViewById(R.id.tabviewpager);
+		viewPager.setVisibility(View.VISIBLE);
+		String []tabs =new String[titles.size()];
+		titles.toArray(tabs);
+		viewPager.initTabs(tabs);
+		viewPager.setAdapter(new CustomPagerAdapter(views));
 	}
 
 	@Override
@@ -55,5 +90,16 @@ public class MainActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private class CompanyItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 }
