@@ -12,15 +12,13 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.util.Log;
-
 public class KdniaoQueryAPI {
 	private final static String EBusinessID="1267653";
 	private final String AppKey="5c68015f-a571-4997-9a63-101e4024b782";
 	private final String ReqURL="http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
+	private final String CHARSET_UTF8="UTF-8";
 	public String getOrderTracesByJson(String expCode, String expNo) throws Exception{
-		String requestData= "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
-		Log.d("tds", "tds info"+requestData);
+		String requestData= "{'ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("RequestData", urlEncoder(requestData, "UTF-8"));
 		params.put("EBusinessID", EBusinessID);

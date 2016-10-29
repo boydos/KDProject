@@ -34,4 +34,8 @@ public class InitConfig {
 		Collections.sort(infos,new OrderDetialComparator());
 		return infos;
 	}
+	
+	public static boolean isWifiEnable(Context context) {
+		return true;
+	}
 }

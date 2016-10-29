@@ -3,7 +3,18 @@ package com.byds.kd;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.byds.kd.adapter.CustomPagerAdapter;
+import com.byds.kd.bean.OrderDetialInfo;
+import com.byds.kd.utils.InitConfig;
+import com.byds.kd.utils.LocationViewHelper;
+import com.byds.kd.utils.LogUtils;
+import com.byds.kd.utils.SearchHelper;
+import com.byds.kd.views.SelectedLoadViewPager;
+import com.byds.kd.views.TabViewPager;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,15 +30,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.byds.kd.adapter.CustomPagerAdapter;
-import com.byds.kd.bean.OrderDetialInfo;
-import com.byds.kd.utils.InitConfig;
-import com.byds.kd.utils.LocationViewHelper;
-import com.byds.kd.utils.SearchHelper;
-import com.byds.kd.views.SelectedLoadViewPager;
-import com.byds.kd.views.TabViewPager;
-
 public class MainActivity extends ActionBarActivity {
+	private final String TAG="MainActivity";
+	private final int SEARCH_KEY=100;
+	private final String SEARCH_NUMBER="search_number";
+	private final String SEARCH_COMPANY="search_company";
 	View locationView;
 	View historyView;
 	View aboutView;
@@ -47,7 +54,33 @@ public class MainActivity extends ActionBarActivity {
 		initViews();
 		initData();
 	}
-	
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			switch (msg.what) {
+			case SEARCH_KEY:
+				String result =msg.obj.toString();
+				LogUtils.i(TAG, result);
+				List<OrderDetialInfo> data = searchHelper.getDetailFromResult(result);
+				
+				String [] times=new String [data.size()];
+				String [] locations =new String [data.size()];
+				for(int i=0;i<data.size();i++) {
+					times[i]=data.get(i).getDate();
+					locations[i]=data.get(i).getLocation();
+				}
+				
+				locationHelper.updateData(mNumberText.getText().toString(), times,locations);
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+	};
 	private void initViews() {
 		mSearch = (Button)findViewById(R.id.search);
 		mNumberText = (EditText)findViewById(R.id.number);
@@ -145,8 +178,8 @@ public class MainActivity extends ActionBarActivity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 
-			String[] array = v.getResources().getStringArray(R.array.company_values);
-			String number =mNumberText.getText().toString();
+			final String[] array = v.getResources().getStringArray(R.array.company_values);
+			final String number =mNumberText.getText().toString();
 			viewPager.setCurrentItem(0);
 			if(InitConfig.isEmptyString(number)) {
 				locationHelper.clear();
@@ -154,20 +187,22 @@ public class MainActivity extends ActionBarActivity {
 				return;
 			}
 			
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					String company=array[currentPosition];
+					LogUtils.i(TAG, String.format("number=%s company=%s", number,company));
+					String result = searchHelper.search(number, company);
+					mHandler.sendMessage(mHandler.obtainMessage(SEARCH_KEY, result));
+				}
+			}).start();
 			
-			List<OrderDetialInfo> data = /*searchHelper.search(number, array[currentPosition]);*/InitConfig.getTestKDInfos();
-			
-			String [] times=new String [data.size()];
-			String [] locations =new String [data.size()];
-			for(int i=0;i<data.size();i++) {
-				times[i]=data.get(i).getDate();
-				locations[i]=data.get(i).getLocation();
-			}
-			
-			locationHelper.updateData(mNumberText.getText().toString(), times,locations);
 		}
 		
 	}
+
 	private class CompanyItemSelectedListener implements OnItemSelectedListener {
 
 		@Override
