@@ -1,0 +1,10 @@
+{  "EBusinessID": "1267653",  
+   "ShipperCode": "ZTO",  
+   "Success": true,  
+   "LogisticCode": "415895927310",  
+   "State": "2",  
+   "Traces": [    
+   {      "AcceptTime": "2016-10-28 16:11:48",      "AcceptStation": "株洲芦淞三部 的 王罗溅 已收件"    },
+   {      "AcceptTime": "2016-10-28 19:03:50",      "AcceptStation": "快件离开 株洲 已发往 北京"    },   
+   {      "AcceptTime": "2016-10-28 19:08:02",      "AcceptStation": "快件已到达 株洲"    }  
+   ]}

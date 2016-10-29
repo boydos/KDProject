@@ -9,8 +9,14 @@
     <string name="kd_number">快递单号</string>
     <string name="kd_company">快递公司</string>
     
+    <string name="data_is_empty">无订单信息</string>
     <string name="search_number_empty">请输入纯数字的快递单号</string>
     
+    <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
+    <string name="yestoday">昨天</string>
+    <string name="before_day">天前</string>
+    <string name="after_day">天后</string>
     <string name="kd_order">订单轨迹</string>
     <string name="kd_history">历史记录</string>
     <string name="about">关于我们</string>

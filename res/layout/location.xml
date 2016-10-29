@@ -3,9 +3,15 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-	
+	<TextView android:id="@+id/no_data"
+	    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:visibility="gone"
+        android:text="@string/data_is_empty" />
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-        android:id="@+id/list"
+        android:id="@+id/locations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -14,6 +20,7 @@
         android:overScrollMode="never"
         android:divider="#FFFFFF"
         android:padding="16dp"
+        android:visibility="gone"
         android:scrollbarStyle="outsideOverlay" />
 
 </android.support.v4.widget.DrawerLayout>

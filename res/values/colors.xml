@@ -1,0 +1,9 @@
+<resources>
+
+    <color name="header_normal">#ffffffff</color>
+    <color name="header_pressed">#ffc0392b</color>
+    <color name="menu_section_header">#FFDDDDDD</color>
+    <color name="white_light">#ffffffff</color>
+    <color name="title_bg">#ff97847d</color>
+
+</resources>

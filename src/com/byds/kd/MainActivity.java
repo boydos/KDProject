@@ -1,6 +1,7 @@
 package com.byds.kd;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -20,7 +20,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.byds.kd.adapter.CustomPagerAdapter;
+import com.byds.kd.bean.OrderDetialInfo;
 import com.byds.kd.utils.InitConfig;
+import com.byds.kd.utils.LocationViewHelper;
 import com.byds.kd.utils.SearchHelper;
 import com.byds.kd.views.SelectedLoadViewPager;
 import com.byds.kd.views.TabViewPager;
@@ -29,12 +31,13 @@ public class MainActivity extends ActionBarActivity {
 	View locationView;
 	View historyView;
 	View aboutView;
-	
+	SelectedLoadViewPager viewPager;
 	EditText mNumberText;
 	Spinner mCompanySpinner;
 	Button mSearch;
 	
 	SearchHelper searchHelper;
+	LocationViewHelper locationHelper;
 	public static int currentPosition=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,9 @@ public class MainActivity extends ActionBarActivity {
 		locationView =mLi.inflate(R.layout.location, null);
 		historyView =mLi.inflate(R.layout.history, null);
 		aboutView = mLi.inflate(R.layout.about, null);
+		
+		locationHelper = new LocationViewHelper(locationView);
+		
 		ArrayList<View> views = new ArrayList<View>();
 		views.add(locationView);
 		views.add(historyView);
@@ -66,8 +72,9 @@ public class MainActivity extends ActionBarActivity {
 		//useTabView(views, titles);
 		useSelectLoadView(views, titles);
 	}
+	
 	private void initData() {
-		mNumberText.setText("");
+		mNumberText.setText("415895927310");
 		ArrayAdapter<String> adapter=  new ArrayAdapter<String>(this,
 						android.R.layout.simple_spinner_item, 
 						getResources().getStringArray(R.array.company));
@@ -82,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
 	 * @param titles
 	 */
 	private void useSelectLoadView(ArrayList<View> views,ArrayList<String>titles) {
-		SelectedLoadViewPager viewPager = (SelectedLoadViewPager)findViewById(R.id.myviewpager);
+		viewPager = (SelectedLoadViewPager)findViewById(R.id.myviewpager);
 		viewPager.setVisibility(View.VISIBLE);
 		viewPager.setAdapter(new CustomPagerAdapter(views, titles));
 	}
@@ -92,12 +99,12 @@ public class MainActivity extends ActionBarActivity {
 	 * @param titles
 	 */
 	private void useTabView(ArrayList<View> views,ArrayList<String>titles) {
-		TabViewPager viewPager = (TabViewPager)findViewById(R.id.tabviewpager);
-		viewPager.setVisibility(View.VISIBLE);
+		TabViewPager tabPager = (TabViewPager)findViewById(R.id.tabviewpager);
+		tabPager.setVisibility(View.VISIBLE);
 		String []tabs =new String[titles.size()];
 		titles.toArray(tabs);
-		viewPager.initTabs(tabs);
-		viewPager.setAdapter(new CustomPagerAdapter(views));
+		tabPager.initTabs(tabs);
+		tabPager.setAdapter(new CustomPagerAdapter(views));
 	}
 
 	@Override
@@ -139,8 +146,25 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated method stub
 
 			String[] array = v.getResources().getStringArray(R.array.company_values);
-			searchHelper.search(mNumberText.getText().toString(), array[currentPosition]);
-			Toast.makeText(v.getContext(), "公司编号:"+array[currentPosition], Toast.LENGTH_SHORT).show();
+			String number =mNumberText.getText().toString();
+			viewPager.setCurrentItem(0);
+			if(InitConfig.isEmptyString(number)) {
+				locationHelper.clear();
+				Toast.makeText(v.getContext(), v.getResources().getString(R.string.search_number_empty), Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			
+			List<OrderDetialInfo> data = /*searchHelper.search(number, array[currentPosition]);*/InitConfig.getTestKDInfos();
+			
+			String [] times=new String [data.size()];
+			String [] locations =new String [data.size()];
+			for(int i=0;i<data.size();i++) {
+				times[i]=data.get(i).getDate();
+				locations[i]=data.get(i).getLocation();
+			}
+			
+			locationHelper.updateData(mNumberText.getText().toString(), times,locations);
 		}
 		
 	}
