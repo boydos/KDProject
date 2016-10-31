@@ -3,15 +3,7 @@ package com.byds.kd;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.byds.kd.adapter.CustomPagerAdapter;
-import com.byds.kd.bean.OrderDetialInfo;
-import com.byds.kd.utils.InitConfig;
-import com.byds.kd.utils.LocationViewHelper;
-import com.byds.kd.utils.LogUtils;
-import com.byds.kd.utils.SearchHelper;
-import com.byds.kd.views.SelectedLoadViewPager;
-import com.byds.kd.views.TabViewPager;
-
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,13 +20,24 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import com.byds.kd.adapter.CustomPagerAdapter;
+import com.byds.kd.bean.OrderDetialInfo;
+import com.byds.kd.utils.DialogUtils;
+import com.byds.kd.utils.InitConfig;
+import com.byds.kd.utils.LocationViewHelper;
+import com.byds.kd.utils.LogUtils;
+import com.byds.kd.utils.SearchHelper;
+import com.byds.kd.utils.ToastUtils;
+import com.byds.kd.views.SelectedLoadViewPager;
+import com.byds.kd.views.TabViewPager;
 
 public class MainActivity extends ActionBarActivity {
 	private final String TAG="MainActivity";
 	private final int SEARCH_KEY=100;
 	private final String SEARCH_NUMBER="search_number";
 	private final String SEARCH_COMPANY="search_company";
+	private ProgressDialog searchDialog;
 	View locationView;
 	View historyView;
 	View aboutView;
@@ -51,6 +54,8 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		searchHelper = new SearchHelper(this);
+		searchDialog = DialogUtils.showCircelProgressDialog(this);
+		searchDialog.setMessage(getResources().getString(R.string.searching));
 		initViews();
 		initData();
 	}
@@ -61,7 +66,8 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case SEARCH_KEY:
-				String result =msg.obj.toString();
+				searchDialog.cancel();
+				String result =(String)msg.obj;
 				LogUtils.i(TAG, result);
 				List<OrderDetialInfo> data = searchHelper.getDetailFromResult(result);
 				
@@ -107,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void initData() {
-		mNumberText.setText("415895927310");
+		mNumberText.setText("");
 		ArrayAdapter<String> adapter=  new ArrayAdapter<String>(this,
 						android.R.layout.simple_spinner_item, 
 						getResources().getStringArray(R.array.company));
@@ -177,24 +183,26 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-
-			final String[] array = v.getResources().getStringArray(R.array.company_values);
 			final String number =mNumberText.getText().toString();
-			viewPager.setCurrentItem(0);
-			if(InitConfig.isEmptyString(number)) {
-				locationHelper.clear();
-				Toast.makeText(v.getContext(), v.getResources().getString(R.string.search_number_empty), Toast.LENGTH_SHORT).show();
+			
+			if(!InitConfig.isNetworkAvailable(v.getContext())) {
+				ToastUtils.showMsg(v.getContext(), R.string.no_network);
 				return;
 			}
-			
+			if(InitConfig.isEmptyString(number)) {
+				locationHelper.clear();
+				ToastUtils.showMsg(v.getContext(), R.string.search_number_empty);
+				return;
+			}
+			viewPager.setCurrentItem(0);
+			searchDialog.show();
 			new Thread(new Runnable() {
 				
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					String company=array[currentPosition];
-					LogUtils.i(TAG, String.format("number=%s company=%s", number,company));
-					String result = searchHelper.search(number, company);
+					LogUtils.i(TAG, String.format("number=%s company=%d", number,currentPosition));
+					String result = searchHelper.search(number, currentPosition);
 					mHandler.sendMessage(mHandler.obtainMessage(SEARCH_KEY, result));
 				}
 			}).start();

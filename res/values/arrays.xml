@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string-array name="company">
-      <item >自动识别</item>
-      <item >申通快递</item>
-      <item >中通快递</item>
-      <item >圆通快递</item>
-      <item >顺丰快递</item>
-  </string-array>
-  
-  <string-array name="company_values">
-        <item >AUTO</item>
-        <item >STO</item>
-        <item >ZTO</item>
-        <item >YTO</item>
-        <item >SF</item>
+
+    <string-array name="company">
+        <item>自动识别</item>
+        <item>顺丰快递</item>
+        <item>申通快递</item>
+        <item>中通速递</item>
+        <item>圆通速递</item>
+        <item>EMS</item>
+        <item>德邦</item>
+        <item>如风达</item>
+        <item>韵达快递</item>
+        <item>百世快递</item>
+        <item>天天快递</item>
     </string-array>
+    <string-array name="company_values">
+        <item>AUTO</item>
+        <item>SF</item>
+        <item>STO</item>
+        <item>ZTO</item>
+        <item>YTO</item>
+        <item>EMS</item>
+        <item>DBL</item>
+        <item>RFD</item>
+        <item>YD</item>
+        <item>HTKY</item>
+        <item>HHTT</item>
+    </string-array>
+
 </resources>

@@ -174,13 +174,13 @@ public class TimeLineAdapter extends BaseAdapter implements StickyListHeadersAda
 	    long now = DateTools.stringDate2long(DateTools.getFormatString(System.currentTimeMillis(), "yyyy-MM-dd"));
         int distance = (int)((System.currentTimeMillis()-before)/(1000*60*60*24));
         String display=mContext.getResources().getString(R.string.today);
-        if(distance==2) {
+        if(distance==1) {
         	display =mContext.getResources().getString(R.string.yestoday);
-        } else if(distance==-2) {
+        } else if(distance==-1) {
         	display =mContext.getResources().getString(R.string.tomorrow);
-        } else if(distance>2) {
+        } else if(distance>1) {
         	display =distance+mContext.getResources().getString(R.string.before_day);
-        } else if(distance<-2) {
+        } else if(distance<-1) {
         	display =distance+mContext.getResources().getString(R.string.after_day);
         }
         return display;

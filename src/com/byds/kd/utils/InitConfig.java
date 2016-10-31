@@ -1,12 +1,15 @@
 package com.byds.kd.utils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.view.inputmethod.InputMethodManager;
 
@@ -34,8 +37,43 @@ public class InitConfig {
 		Collections.sort(infos,new OrderDetialComparator());
 		return infos;
 	}
-	
+	public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return wifi.isConnected() || mobile.isConnected();
+    }
 	public static boolean isWifiEnable(Context context) {
-		return true;
+		WifiManager wifiManager = (WifiManager) context
+                .getSystemService(Context.WIFI_SERVICE);
+        return wifiManager.isWifiEnabled();
 	}
+	public static boolean getMobileDataEnable(Context context) {
+        ConnectivityManager connectionManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        Class<?> ownerClass = connectionManager.getClass();
+
+        try {
+            Class<?>[] parent = null;
+            Object[] args = null;
+            Method method = ownerClass
+                    .getMethod("getMobileDataEnabled", parent);
+            Boolean isOpen = (Boolean) method.invoke(connectionManager, args);
+            return isOpen;
+        } catch (NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

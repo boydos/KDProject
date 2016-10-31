@@ -1305,22 +1305,24 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
-        public static final int about=0x7f0a001c;
+        public static final int about=0x7f0a001e;
         public static final int action_settings=0x7f0a000f;
-        public static final int after_day=0x7f0a0019;
+        public static final int after_day=0x7f0a001b;
         public static final int app_name=0x7f0a000d;
-        public static final int before_day=0x7f0a0018;
+        public static final int before_day=0x7f0a001a;
         public static final int data_is_empty=0x7f0a0013;
         public static final int hello_world=0x7f0a000e;
         public static final int kd_company=0x7f0a0012;
-        public static final int kd_history=0x7f0a001b;
+        public static final int kd_history=0x7f0a001d;
         public static final int kd_number=0x7f0a0011;
-        public static final int kd_order=0x7f0a001a;
+        public static final int kd_order=0x7f0a001c;
         public static final int kd_search=0x7f0a0010;
+        public static final int no_network=0x7f0a0015;
         public static final int search_number_empty=0x7f0a0014;
-        public static final int today=0x7f0a0015;
-        public static final int tomorrow=0x7f0a0016;
-        public static final int yestoday=0x7f0a0017;
+        public static final int searching=0x7f0a0016;
+        public static final int today=0x7f0a0017;
+        public static final int tomorrow=0x7f0a0018;
+        public static final int yestoday=0x7f0a0019;
     }
     public static final class style {
         /** 
@@ -1346,7 +1348,6 @@ containing a value of this type.
          */
         public static final int AppBaseTheme=0x7f0b008b;
         /**  Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f0b008c;
         /**  Mimic text appearance in select_dialog_item.xml 
