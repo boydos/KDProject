@@ -13,6 +13,7 @@
     <string name="search_number_empty">请输入纯数字的快递单号</string>
     <string name="no_network">没有网络，请检查网络情况</string>
     <string name="searching">正在查询快递，请稍等....</string>
+    <string name="no_history">无记录</string>
     
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>

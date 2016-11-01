@@ -11,6 +11,9 @@ import android.provider.ContactsContract.Data;
  */
 public class DateTools {
     
+	public static String getNowTime() {
+		return getFormatString(System.currentTimeMillis(), "yyyy-MM-dd hh:mm:ss");
+	}
     public static Date getDate(long time) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(time);
