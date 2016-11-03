@@ -117,8 +117,11 @@ public class SearchHelper implements IContants{
 			dbHelper.update(order);
 		}
 	}
-	private List<OrderInfo> getHistory() {
+	public List<OrderInfo> getHistory() {
 		return dbHelper.query(null, null);
 	}
 	
+	public void clearHistory() {
+		dbHelper.delete(null, null);
+	}
 }

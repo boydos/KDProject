@@ -24,20 +24,23 @@ import android.widget.Spinner;
 import com.byds.kd.adapter.CustomPagerAdapter;
 import com.byds.kd.bean.OrderDetialInfo;
 import com.byds.kd.utils.DialogUtils;
+import com.byds.kd.utils.HistoryViewHelper;
+import com.byds.kd.utils.IContants;
 import com.byds.kd.utils.InitConfig;
 import com.byds.kd.utils.LocationViewHelper;
 import com.byds.kd.utils.LogUtils;
 import com.byds.kd.utils.SearchHelper;
 import com.byds.kd.utils.ToastUtils;
 import com.byds.kd.views.SelectedLoadViewPager;
+import com.byds.kd.views.SelectedLoadViewPager.OnPageSelectedFlushListener;
 import com.byds.kd.views.TabViewPager;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements IContants{
 	private final String TAG="MainActivity";
-	private final int SEARCH_KEY=100;
-	private final String SEARCH_NUMBER="search_number";
-	private final String SEARCH_COMPANY="search_company";
 	private ProgressDialog searchDialog;
+	
+	private String [] company;
+	private String [] companyCode;
 	View locationView;
 	View historyView;
 	View aboutView;
@@ -48,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	SearchHelper searchHelper;
 	LocationViewHelper locationHelper;
+	HistoryViewHelper historyHelper;
 	public static int currentPosition=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,8 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.main);
 		searchHelper = new SearchHelper(this);
 		searchDialog = DialogUtils.showCircelProgressDialog(this);
-		searchDialog.setMessage(getResources().getString(R.string.searching));
+		company =getResources().getStringArray(R.array.company);
+		companyCode=getResources().getStringArray(R.array.company_values);
 		initViews();
 		initData();
 	}
@@ -80,7 +85,22 @@ public class MainActivity extends ActionBarActivity {
 				
 				locationHelper.updateData(mNumberText.getText().toString(), times,locations);
 				break;
-
+			case UPDATE_HISTORY_KEY:
+				Bundle bundleData =msg.getData();
+				mNumberText.setText(bundleData.getString("number"));
+				int index=getIndexByCompanyCode(bundleData.getString("code"));
+				mCompanySpinner.setSelection(index);
+				break;
+			case CLEAR_HISTORY:
+				searchDialog.setMessage(getResources().getString(R.string.deleting));
+				searchDialog.show();
+				searchHelper.clearHistory();
+				historyHelper.clearData();
+				searchDialog.cancel();
+				break;
+			case DISSMISS_DIALOG:
+				searchDialog.cancel();
+				break;
 			default:
 				break;
 			}
@@ -91,13 +111,14 @@ public class MainActivity extends ActionBarActivity {
 		mSearch = (Button)findViewById(R.id.search);
 		mNumberText = (EditText)findViewById(R.id.number);
 		mCompanySpinner = (Spinner)findViewById(R.id.company);
-		
+	
 		LayoutInflater mLi= LayoutInflater.from(this);
 		locationView =mLi.inflate(R.layout.location, null);
 		historyView =mLi.inflate(R.layout.history, null);
 		aboutView = mLi.inflate(R.layout.about, null);
 		
 		locationHelper = new LocationViewHelper(locationView);
+		historyHelper = new HistoryViewHelper(historyView, this.mHandler);
 		
 		ArrayList<View> views = new ArrayList<View>();
 		views.add(locationView);
@@ -116,11 +137,24 @@ public class MainActivity extends ActionBarActivity {
 		mNumberText.setText("");
 		ArrayAdapter<String> adapter=  new ArrayAdapter<String>(this,
 						android.R.layout.simple_spinner_item, 
-						getResources().getStringArray(R.array.company));
+						company);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mCompanySpinner.setAdapter(adapter);
 		mCompanySpinner.setOnItemSelectedListener(new CompanyItemSelectedListener());
 		mSearch.setOnClickListener(new SearchClickListener());
+		updateHistory();
+	}
+	
+	private int getIndexByCompanyCode(String code) {
+		if(code==null||"".equalsIgnoreCase(code.trim())) return 0;
+		if(companyCode==null) return 0;
+		for(int i=0;i<companyCode.length;i++) {
+			if(code.equalsIgnoreCase(companyCode[i])) return i;
+		}
+		return 0;
+	}
+	private void updateHistory() {
+		historyHelper.updateData(searchHelper.getHistory());
 	}
 	/**
 	 * use custom view to show info ,SelectedLoadViewPager
@@ -131,6 +165,14 @@ public class MainActivity extends ActionBarActivity {
 		viewPager = (SelectedLoadViewPager)findViewById(R.id.myviewpager);
 		viewPager.setVisibility(View.VISIBLE);
 		viewPager.setAdapter(new CustomPagerAdapter(views, titles));
+		viewPager.setOnPageSelectedFlushListener(new OnPageSelectedFlushListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				// TODO Auto-generated method stub
+				if(position==1)historyHelper.updateData(searchHelper.getHistory());
+			}
+		});
 	}
 	/**
 	 * use custom view to show info,TabViewPager
@@ -162,7 +204,8 @@ public class MainActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if( id ==R.id.clear_history) {
+			mHandler.sendEmptyMessage(CLEAR_HISTORY);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -183,34 +226,36 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			final String number =mNumberText.getText().toString();
-			
-			if(!InitConfig.isNetworkAvailable(v.getContext())) {
-				ToastUtils.showMsg(v.getContext(), R.string.no_network);
-				return;
-			}
-			if(InitConfig.isEmptyString(number)) {
-				locationHelper.clear();
-				ToastUtils.showMsg(v.getContext(), R.string.search_number_empty);
-				return;
-			}
-			viewPager.setCurrentItem(0);
-			searchDialog.show();
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					LogUtils.i(TAG, String.format("number=%s company=%d", number,currentPosition));
-					String result = searchHelper.search(number, currentPosition);
-					mHandler.sendMessage(mHandler.obtainMessage(SEARCH_KEY, result));
-				}
-			}).start();
+			begainSearching();
 			
 		}
 		
 	}
-
+	private void begainSearching() {
+		final String number =mNumberText.getText().toString();
+		
+		if(!InitConfig.isNetworkAvailable(this)) {
+			ToastUtils.showMsg(this, R.string.no_network);
+			return;
+		}
+		if(InitConfig.isEmptyString(number)) {
+			locationHelper.clear();
+			ToastUtils.showMsg(this, R.string.search_number_empty);
+			return;
+		}
+		viewPager.setCurrentItem(0);
+		searchDialog.setMessage(getResources().getString(R.string.searching));
+		searchDialog.show();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				LogUtils.i(TAG, String.format("number=%s company=%d", number,currentPosition));
+				String result = searchHelper.search(number, currentPosition);
+				mHandler.sendMessage(mHandler.obtainMessage(SEARCH_KEY, result));
+			}
+		}).start();
+	}
 	private class CompanyItemSelectedListener implements OnItemSelectedListener {
 
 		@Override

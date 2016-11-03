@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">快递信息</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="clear_history">清除痕迹</string>
     <string name="action_settings">设置</string>
     
 	<string name="kd_search">快递查询</string>
@@ -13,8 +13,12 @@
     <string name="search_number_empty">请输入纯数字的快递单号</string>
     <string name="no_network">没有网络，请检查网络情况</string>
     <string name="searching">正在查询快递，请稍等....</string>
+    <string name="deleting">正在删除历史记录，请稍等....</string>
     <string name="no_history">无记录</string>
     
+    <string name="QQ">QQ:973171883 </string>
+    <string name="Email">973171883@qq.com</string>
+    <string name="CopyRight">CopyRight@2016 BY TDS</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
     <string name="yestoday">昨天</string>

@@ -61,7 +61,7 @@ public class DataBaseHelper extends SQLiteOpenHelper implements IContants{
 		return getWritableDatabase().insert(DATABASE_TABLE, null, getValues(company, number, date, state));
 	}
 	public List<OrderInfo> query(String where,String[] whereArgs) {
-		return query(where, whereArgs, null, null, "order by "+KEY_DATE+" desc");
+		return query(where, whereArgs, null, null, KEY_DATE+" desc");
 	}
 	public List<OrderInfo> query(String where,String[] whereArgs,String groupBy,String having,String orderBy){
 		SQLiteDatabase db = getWritableDatabase();
@@ -83,7 +83,7 @@ public class DataBaseHelper extends SQLiteOpenHelper implements IContants{
 		return delete(KEY_ID+"="+id,null);
 	}
 	public long delete(String where,String[]whereArgs) {
-		return getWritableDatabase().delete(DATABASE_NAME, where, whereArgs);
+		return getWritableDatabase().delete(DATABASE_TABLE, where, whereArgs);
 	}
 	public long update(OrderInfo info) {
 		return update(info.getId(),info.getCompany(),info.getNumber(),info.getDate(),info.getState());

@@ -4,9 +4,9 @@
     tools:context="com.byds.kd.MainActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/clear_history"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/clear_history"
         app:showAsAction="never"/>
 
 </menu>
