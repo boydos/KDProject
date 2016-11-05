@@ -7,6 +7,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,9 +33,7 @@ import com.byds.kd.utils.LocationViewHelper;
 import com.byds.kd.utils.LogUtils;
 import com.byds.kd.utils.SearchHelper;
 import com.byds.kd.utils.ToastUtils;
-import com.byds.kd.views.SelectedLoadViewPager;
-import com.byds.kd.views.SelectedLoadViewPager.OnPageSelectedFlushListener;
-import com.byds.kd.views.TabViewPager;
+import com.byds.kd.views.SlidingTabLayout;
 
 public class MainActivity extends ActionBarActivity implements IContants{
 	private final String TAG="MainActivity";
@@ -44,7 +44,8 @@ public class MainActivity extends ActionBarActivity implements IContants{
 	View locationView;
 	View historyView;
 	View aboutView;
-	SelectedLoadViewPager viewPager;
+	SlidingTabLayout slidingLayout;
+	ViewPager viewPager;
 	EditText mNumberText;
 	Spinner mCompanySpinner;
 	Button mSearch;
@@ -130,7 +131,8 @@ public class MainActivity extends ActionBarActivity implements IContants{
 		titles.add(getResources().getString(R.string.about));
 		
 		//useTabView(views, titles);
-		useSelectLoadView(views, titles);
+		//useSelectLoadView(views, titles);
+		userSlidingView(views,titles);
 	}
 	
 	private void initData() {
@@ -156,13 +158,39 @@ public class MainActivity extends ActionBarActivity implements IContants{
 	private void updateHistory() {
 		historyHelper.updateData(searchHelper.getHistory());
 	}
+	private void userSlidingView(ArrayList<View> views,ArrayList<String>titles) {
+		slidingLayout = (SlidingTabLayout)findViewById(R.id.mySlidingLayout);
+		viewPager =(ViewPager) findViewById(R.id.myViewPager);
+		viewPager.setAdapter(new CustomPagerAdapter(views,titles));
+		slidingLayout.setViewPager(viewPager);
+		slidingLayout.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onPageScrolled(int position, float arg1, int arg2) {
+				// TODO Auto-generated method stub
+				if(position==1)historyHelper.updateData(searchHelper.getHistory());
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
 	/**
 	 * use custom view to show info ,SelectedLoadViewPager
 	 * @param views
 	 * @param titles
 	 */
 	private void useSelectLoadView(ArrayList<View> views,ArrayList<String>titles) {
-		viewPager = (SelectedLoadViewPager)findViewById(R.id.myviewpager);
+		/*viewPager = (SelectedLoadViewPager)findViewById(R.id.myviewpager);
 		viewPager.setVisibility(View.VISIBLE);
 		viewPager.setAdapter(new CustomPagerAdapter(views, titles));
 		viewPager.setOnPageSelectedFlushListener(new OnPageSelectedFlushListener() {
@@ -172,7 +200,7 @@ public class MainActivity extends ActionBarActivity implements IContants{
 				// TODO Auto-generated method stub
 				if(position==1)historyHelper.updateData(searchHelper.getHistory());
 			}
-		});
+		});*/
 	}
 	/**
 	 * use custom view to show info,TabViewPager
@@ -180,12 +208,12 @@ public class MainActivity extends ActionBarActivity implements IContants{
 	 * @param titles
 	 */
 	private void useTabView(ArrayList<View> views,ArrayList<String>titles) {
-		TabViewPager tabPager = (TabViewPager)findViewById(R.id.tabviewpager);
+	/*	TabViewPager tabPager = (TabViewPager)findViewById(R.id.tabviewpager);
 		tabPager.setVisibility(View.VISIBLE);
 		String []tabs =new String[titles.size()];
 		titles.toArray(tabs);
 		tabPager.initTabs(tabs);
-		tabPager.setAdapter(new CustomPagerAdapter(views));
+		tabPager.setAdapter(new CustomPagerAdapter(views));*/
 	}
 
 	@Override
